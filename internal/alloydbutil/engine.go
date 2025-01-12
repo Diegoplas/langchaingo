@@ -26,15 +26,15 @@ func NewPostgresEngine(ctx context.Context, opts ...Option) (*PostgresEngine, er
 	if err != nil {
 		return nil, err
 	}
-	user, usingIamAuth, err := getUser(ctx, cfg)
+	user, usingIAMAuth, err := getUser(ctx, cfg)
 	if err != nil {
 		return nil, fmt.Errorf("error assigning user. Err: %w", err)
 	}
-	if usingIamAuth {
+	if usingIAMAuth {
 		cfg.user = user
 	}
 	if cfg.connPool == nil {
-		cfg.connPool, err = createPool(ctx, cfg, usingIamAuth)
+		cfg.connPool, err = createPool(ctx, cfg, usingIAMAuth)
 
 		if err != nil {
 			return &PostgresEngine{}, err
@@ -45,11 +45,10 @@ func NewPostgresEngine(ctx context.Context, opts ...Option) (*PostgresEngine, er
 }
 
 // createPool creates a connection pool to the PostgreSQL database.
-func createPool(ctx context.Context, cfg engineConfig, usingIamAuth bool) (*pgxpool.Pool, error) {
+func createPool(ctx context.Context, cfg engineConfig, usingIAMAuth bool) (*pgxpool.Pool, error) {
 	dialeropts := []alloydbconn.Option{}
 	dsn := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable", cfg.user, cfg.password, cfg.database)
-	if usingIamAuth {
-
+	if usingIAMAuth {
 		dialeropts = append(dialeropts, alloydbconn.WithIAMAuthN())
 		dsn = fmt.Sprintf("user=%s dbname=%s sslmode=disable", cfg.user, cfg.database)
 	}
@@ -88,7 +87,7 @@ func (p *PostgresEngine) Close() {
 // will be used and an error.
 func getUser(ctx context.Context, config engineConfig) (string, bool, error) {
 	if config.user != "" && config.password != "" {
-		// If both username and password are provided use default username.
+		// If both username and password are provided use provided username.
 		return config.user, false, nil
 	} else if config.iamAccountEmail != "" {
 		// If iamAccountEmail is provided use it as user.

@@ -69,8 +69,8 @@ func WithIPType(ipType string) Option {
 	}
 }
 
-// WithIamAccountEmail sets the WithIamAccountEmail field.
-func WithIamAccountEmail(email string) Option {
+// WithIAMAccountEmail sets the WithIAMAccountEmail field.
+func WithIAMAccountEmail(email string) Option {
 	return func(p *engineConfig) {
 		p.iamAccountEmail = email
 

@@ -25,26 +25,26 @@ func TestGetUser(t *testing.T) {
 		engineConfig     engineConfig
 		expectedErr      string
 		expectedUserName string
-		expectedIamAuth  bool
+		expectedIAMAuth  bool
 	}{
 		{
 			name:             "User and Password provided",
 			engineConfig:     engineConfig{user: "testUser", password: "testPass"},
 			expectedUserName: "testUser",
-			expectedIamAuth:  false,
+			expectedIAMAuth:  false,
 		},
 		{
-			name:             "iam account email provided",
+			name:             "IAM account email provided",
 			engineConfig:     engineConfig{iamAccountEmail: testServiceAccount},
 			expectedUserName: testServiceAccount,
-			expectedIamAuth:  true,
+			expectedIAMAuth:  true,
 		},
 		{
-			name:             "Getting iam account email from the env",
-			engineConfig:     engineConfig{emailRetreiver: mockEmailRetriever},
+			name:         "Getting IAM account email from the env",
+			engineConfig: engineConfig{emailRetreiver: mockEmailRetriever},
 
 			expectedUserName: testServiceAccount,
-			expectedIamAuth:  true,
+			expectedIAMAuth:  true,
 		},
 		{
 			name:         "Error - User provided but Password missing",
@@ -66,7 +66,7 @@ func TestGetUser(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
-			user, usingIamAuth, err := getUser(context.Background(), tc.engineConfig)
+			user, usingIAMAuth, err := getUser(context.Background(), tc.engineConfig)
 
 			// Check if the error matches the expected error
 			if err != nil && err.Error() != tc.expectedErr {
@@ -80,9 +80,9 @@ func TestGetUser(t *testing.T) {
 			if user != tc.expectedUserName {
 				t.Errorf("expected user %s, got %s", tc.expectedUserName, user)
 			}
-			// Validate if IamAuth was expected
-			if usingIamAuth != tc.expectedIamAuth {
-				t.Errorf("expected usingIamAuth %t, got %t", tc.expectedIamAuth, usingIamAuth)
+			// Validate if IAMAuth was expected
+			if usingIAMAuth != tc.expectedIAMAuth {
+				t.Errorf("expected usingIAMAuth %t, got %t", tc.expectedIAMAuth, usingIAMAuth)
 			}
 		})
 	}
