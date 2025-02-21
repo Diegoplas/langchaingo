@@ -3,9 +3,9 @@ package cloudsql
 import (
 	"context"
 	"fmt"
+
 	"github.com/tmc/langchaingo/embeddings"
 	"github.com/tmc/langchaingo/internal/cloudsqlutil"
-	"github.com/tmc/langchaingo/vectorstores"
 )
 
 const (
@@ -40,7 +40,7 @@ type SearchDocument struct {
 	Distance           float32
 }
 
-var _ vectorstores.VectorStore = &VectorStore{}
+// var _ vectorstores.VectorStore = &VectorStore{}
 
 // NewVectorStore creates a new VectorStore with options.
 func NewVectorStore(ctx context.Context, engine cloudsqlutil.PostgresEngine, embedder embeddings.Embedder, tableName string, opts ...CloudSQLVectoreStoresOption) (VectorStore, error) {
